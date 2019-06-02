@@ -148,9 +148,10 @@ class MicroPostController extends Controller
         //$posts = $this->microPostRepo->findBy(['user'=>$userWithPost], ['created_at'=>'DESC']);
         $posts = $userWithPost->getPosts();
         $html = $this->twig->render(
-        'micro-post/index.html.twig',
+        'micro-post/user-posts.html.twig',
         [
-          'posts'=>$posts
+          'posts'=>$posts,
+          'user'=>$userWithPost
         ]
 
     );
