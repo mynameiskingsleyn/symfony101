@@ -12,9 +12,9 @@
                 {% if is_granted('ROLE_USER')  %}
                   {% if user != app.user %}
                     {% if user.followers.contains(app.user) %}
-                      <a href="" class="btn btn-outline-danger">Un Follow</a>
+                      <a href="{{ path('following_unfollow',{'id':user.id}) }}" class="btn btn-outline-danger">Un Follow</a>
                     {% else %}
-                      <a href="" class="btn btn-outline-primary">Follow</a>
+                      <a href="{{ path('following_follow',{'id':user.id}) }}" class="btn btn-outline-primary">Follow</a>
                     {% endif %}
                   {% endif %}
                 {% endif %}

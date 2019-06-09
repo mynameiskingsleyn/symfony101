@@ -21,14 +21,14 @@ class FollowingController extends Controller
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        $currentUser->getFollowing()
-                    ->add($userToFollow);
+        $entityManager = $this->getDoctrine()->getManager();
+        if ($currentUser->getId() != $userToFollow->getId()) {
+            //$currentUser->getFollowing()->add($userToFollow);
+            $currentUser->follow($userToFollow);
+            $entityManager->flush();
+        }
 
-        $this->getDoctrine()
-              ->getManager()
-              ->flush();
-
-        return $this->redirectToRoute('micro_post_user', ['username'=>$userToFollow->getUsername]);
+        return $this->redirectToRoute('micro_post_user', ['username'=>$userToFollow->getUsername()]);
     }
     /**
     * @Route("/unfollow/{id}", name="following_unfollow")
@@ -37,11 +37,11 @@ class FollowingController extends Controller
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
         $currentUser->getFollowing()
-                  ->removeElement($userToUnFollow);
+                      ->removeElement($userToUnFollow);
+        $entityManager->flush();
 
-        $this->getDoctrine()
-            ->getManager()
-            ->flush();
+        return $this->redirectToRoute('micro_post_user', ['username'=>$userToUnFollow->getUsername()]);
     }
 }

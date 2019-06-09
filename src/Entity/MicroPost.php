@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MicroPostRepository")
@@ -36,6 +37,21 @@ class MicroPost
     * @ORM\JoinColumn(nullable=false)
     */
     private $user;
+
+    /**
+    * @ORM\ManyToMany(targetEntity="App\Entity\User",inversedBy="postsLiked")
+    * @ORM\JoinTable(name="post_likes",
+    *     joinColumns={ @ORM\JoinColumn(name="post_id",referencedColumnName="id")},
+    *     inverseJoinColumns={ @ORM\JoinColumn(name="user_id",referencedColumnName="id")}
+    * )
+    */
+    private $likedBy;
+
+    public function __construct()
+    {
+        $this->likedBy = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -85,5 +101,20 @@ class MicroPost
     public function getUser()
     {
         return $this->user;
+    }
+    /**
+    * @return Collection
+    */
+    public function getLikedBy()
+    {
+        return $this->likedBy;
+    }
+
+    public function like(User $user)
+    {
+        if ($this->getLikedBy()->contains($user)) {
+            return;
+        }
+        $this->getLikedBy()->add($user);
     }
 }

@@ -6,6 +6,7 @@ use App\Entity\MicroPost;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Repository\MicroPostRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,14 +60,25 @@ class MicroPostController extends Controller
     /**
     * @Route("/",name="micro_post_index")
     */
-    public function index()
+    public function index(TokenStorageInterface $tokenStorage, UserRepository $userRepo)
     {
         //$posts = $this->microPostRepo->findAll();
-        $posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
+        $currentUser = $tokenStorage->getToken()->getUser();
+        $usersToFollow =[];
+        if ($currentUser instanceof User) {
+            $follows = $currentUser->getFollowing();
+            //dd($follows->toArray());
+            $posts = $this->microPostRepo->findAllByUsers($follows);
+            $usersToFollow = count($posts)=== 0 ? $userRepo->findAllWithMoreThanFivePostsExceptUser($currentUser) :[];
+        } else {
+            $posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
+        }
+        //dd($usersToFollow);
         $html = $this->twig->render(
           'micro-post/index.html.twig',
           [
-            'posts'=>$posts
+            'posts'=>$posts,
+            'usersToFollow'=>$usersToFollow
           ]
 
       );
@@ -147,6 +159,7 @@ class MicroPostController extends Controller
     {
         //$posts = $this->microPostRepo->findBy(['user'=>$userWithPost], ['created_at'=>'DESC']);
         $posts = $userWithPost->getPosts();
+        //dd($userWithPost);
         $html = $this->twig->render(
         'micro-post/user-posts.html.twig',
         [
