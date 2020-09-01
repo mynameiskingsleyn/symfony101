@@ -35,7 +35,7 @@ class MicroPost
 
     /**
     * @ORM\ManyToOne(targetEntity="App\Entity\User",inversedBy="posts")
-    * @ORM\JoinColumn(nullable=false)
+    * @ORM\JoinColumn(nullable=false) // can also have (fieldName="user_id")
     */
     private $user;
 
