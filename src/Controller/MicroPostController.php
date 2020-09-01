@@ -69,7 +69,8 @@ class MicroPostController extends Controller
         if ($currentUser instanceof User) {
             $follows = $currentUser->getFollowing();
             //dd($follows->toArray());
-            $posts = $this->microPostRepo->findAllByUsers($follows);
+            //$posts = $this->microPostRepo->findAllByUsers($follows);
+            $posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
             $usersToFollow = count($posts)=== 0 ? $userRepo->findAllWithMoreThanFivePostsExceptUser($currentUser) :[];
         } else {
             $posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
@@ -90,7 +91,7 @@ class MicroPostController extends Controller
 
     /**
     * @Route("/edit/{id}", name="micro_post_edit")
-    * @Security("is_granted('edit',microPost)",message="Access denied")
+    * //@Security("is_granted('edit',microPost)",message="Access denied")
     */
     public function edit(MicroPost $microPost, Request $request)
     {
