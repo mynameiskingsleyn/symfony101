@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MicroPostRepository")
  * @ORM\Table()
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks() // important to use any of the HasLifecycleCallbacks
  */
 class MicroPost
 {
@@ -38,6 +38,7 @@ class MicroPost
     * @ORM\JoinColumn(nullable=false) // can also have (fieldName="user_id")
     */
     private $user;
+
 
     /**
     * @ORM\ManyToMany(targetEntity="App\Entity\User",inversedBy="postsLiked")

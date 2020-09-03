@@ -23,7 +23,7 @@ class MicroPostVoter extends Voter
     protected function supports($attribute, $subject)
     {
         //echo "working";
-        //dd('working');
+        //var_dump('working');
         //$this->logger->info('we are at the voter');
         if (!in_array($attribute, [self::EDIT,self::DELETE])) {
             //$this->logger->info('attribute not in');
@@ -41,6 +41,8 @@ class MicroPostVoter extends Voter
     {
         //dd('working now');
         $authenticatedUser = $token->getUser();
+        //var_dump($authenticatedUser);
+
         if (!$authenticatedUser instanceof User) {
             return false;
         }

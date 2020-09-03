@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
-{# {% set initials = post.user.fullName|split(' ')  %}
+{% set initials = post.user.fullName|split(' ')  %}
 {% set init_first = attribute(initials, 0)|first %}
-{% set init_second = attribute(initials, 1)|first  %} #}
+{% set init_second = attribute(initials, 1)|first  %} 
 {% block body %}
     {{ include('micro-post/raw-post.html.twig',{'post':post})}}
-  {#  <a href="{{ path('micro_post_user',{'username':post.user.username})}}">posts by</a> <b>{{ init_first }} {{ init_second }}</b>
-  #}
+    <a href="{{ path('micro_post_user',{'username':post.user.username})}}">posts by</a> <b>{{ init_first }} {{ init_second }}</b>
+
 {% endblock %}

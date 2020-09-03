@@ -4,13 +4,13 @@
 
 {% include 'includes/messages.html.twig' %}
 
-{# {% if usersToFollow|length %}
+ {% if usersToFollow|length %}
   <p> You are currently not following anyone, you can find these users interesting </p>
   {% for userToFollow in usersToFollow %}
     <a href="{{ path('following_follow',{'id':userToFollow.id})}}">@{{ userToFollow.fullName }}</a>
 
   {% endfor %}
-{% else  %} #}
+{% else  %}
 <h6 class="border-bottom border-gray pb-2 mb-0">Recent updates</h6>
   {% for post in posts %}
     {% if app.user %}
@@ -29,6 +29,6 @@
      </a>
 
   {% endfor %}
-{# {% endif  %} #}
+ {% endif  %} 
 
 {% endblock %}

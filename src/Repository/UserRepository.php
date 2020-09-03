@@ -30,12 +30,12 @@ class UserRepository extends ServiceEntityRepository
     public function findAllWithMoreThanFivePostsExceptUser(User $user)
     {
         $query =  $this->getFindAllWithMoreThanFivePostsQuery();
-        $result = $query->andHaving('u != :user')
+        $mresult = $query->andHaving('u != :user')
                         ->setParameter('user', $user)
-                        ->getQuery()
-                        ->getResult();
+                        ->getQuery();
+        //dd($mresult);
 
-        return $result;
+        return $mresult->getResult();
         // ->andHaving('u != :user')
                     // ->setParameters('user', $user)
                     // ->getQuery()
