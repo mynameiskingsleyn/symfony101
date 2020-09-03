@@ -33,6 +33,18 @@ class NotificationRepository extends ServiceEntityRepository
                 ->getSingleScalarResult();
     }
 
+    public function markAssAsReadByUser(User $user)
+    {
+        $qb = $this->createQueryBuilder('n');
+
+        $qb->update('App\Entity\Notification', 'n')
+          ->set('n.seen', true)
+          ->where('n.user = :user')
+          ->setParameter('user', $user)
+          ->getQuery()
+          ->execute();
+    }
+
     // /**
     //  * @return Notification[] Returns an array of Notification objects
     //  */

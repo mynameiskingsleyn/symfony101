@@ -5,6 +5,7 @@ namespace App\Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\Extension\GlobalsInterface;
+use App\Entity\LikeNotification;
 
 class AppExtension extends AbstractExtension implements GlobalsInterface
 {
@@ -13,7 +14,7 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
     {
         $this->locale = $this->locale;
     }
-    public function getFilters()
+    public function getFilters() // this is from parent AbstractExtension
     {
         return [
           new TwigFilter('price', [$this,'priceFilter'])
@@ -29,6 +30,18 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
     {
         return [
         'locale'=>$this->locale
+      ];
+    }
+
+    public function getTests() // from parent that can be overriden
+    {
+        return [
+        new \Twig_SimpleTest(
+            'like',
+            function ($obj) {
+                return $obj instanceof LikeNotification;
+            }
+        ),
       ];
     }
 }
