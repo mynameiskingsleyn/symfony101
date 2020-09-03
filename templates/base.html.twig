@@ -34,7 +34,7 @@
               resp.json().then(function(value){
                 document.querySelector('#notification-count').innerText = value.count
               });
-              //setTimeout(fetchNotificationCount,5000);
+              setTimeout(fetchNotificationCount,10000);
             }).catch(function(err){
               console.log(err);
             });
