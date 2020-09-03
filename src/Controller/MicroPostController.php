@@ -43,9 +43,9 @@ class MicroPostController extends Controller
     public function __construct(
         \Twig_Environment $twig,
         MicroPostRepository $microPostRepo,
-        FormFactoryInterface $formFactory,
-      EntityManagerInterface $entityManager,
-      RouterInterface $router,
+        FormFactoryInterface $formFactory, // this helps with form
+        EntityManagerInterface $entityManager, // this is to persist entity
+        RouterInterface $router,
         FlashBagInterface $flashBag,
         AuthorizationCheckerInterface $authorizationChecker
     ) {
@@ -63,25 +63,49 @@ class MicroPostController extends Controller
     public function index(TokenStorageInterface $tokenStorage, UserRepository $userRepo)
     {
         //$posts = $this->microPostRepo->findAll();
+        //$currentUser = $this->getUser();
+        //dd($currentUser);
         $currentUser = $tokenStorage->getToken()->getUser();
+        //dd($currentUser);
         $usersToFollow =[];
         if ($currentUser instanceof User) {
             $follows = $currentUser->getFollowing();
-            //dd($follows->toArray());
             $posts = $this->microPostRepo->findAllByUsers($follows);
+            //$posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
             $usersToFollow = count($posts)=== 0 ? $userRepo->findAllWithMoreThanFivePostsExceptUser($currentUser) :[];
         } else {
             $posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
+            //var_dump($posts);
         }
+
         //dd($usersToFollow);
         $html = $this->twig->render(
-          'micro-post/index.html.twig',
-          [
+            'micro-post/index.html.twig',
+            [
             'posts'=>$posts,
             'usersToFollow'=>$usersToFollow
           ]
+        );
+        //dd($posts[0]->getCreatedAt());
+        return new Response($html);
+    }
+    /**
+    * @Route("/all-posts",name="micro_post_all")
+    */
+    public function allPosts()
+    {
+        //$posts = $this->microPostRepo->findAll();
+        $posts = $this->microPostRepo->findBy([], ['created_at'=>'DESC']);
+        $currentUser = $this->getUser();
+        $usersToFollow =[];
 
-      );
+        $html = $this->twig->render(
+            'micro-post/index.html.twig',
+            [
+          'posts'=>$posts,
+          'usersToFollow'=>$usersToFollow
+        ]
+        );
         //dd($posts[0]->getCreatedAt());
         return new Response($html);
     }
@@ -92,7 +116,7 @@ class MicroPostController extends Controller
     */
     public function edit(MicroPost $microPost, Request $request)
     {
-        //$this->denyUnlessGranted('edit',$microPost);
+        //$this->denyUnlessGranted('edit', $microPost);
         // if (!$this->authorizationChecker->isGranted('edit', $microPost)) {
         //     throw new UnauthorizedHttpException();
         // }
@@ -106,11 +130,11 @@ class MicroPostController extends Controller
             return new RedirectResponse($this->router->generate('micro_post_index'));
         }
         return new Response(
-        $this->twig->render(
-            'micro-post/add.html.twig',
-                  ['form'=> $form->createView()]
-        )
-      );
+            $this->twig->render(
+                'micro-post/add.html.twig',
+                ['form'=> $form->createView()]
+            )
+        );
     }
     /**
     * @Route("/delete/{id}",name="micro_post_delete")
@@ -132,9 +156,15 @@ class MicroPostController extends Controller
     public function add(Request $request, TokenStorageInterface $tokenStorage)
     {
         //$user = $this->getUser();
+        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            return new RedirectResponse($this->router->generate('micro_post_index'));
+        }
         $user = $tokenStorage->getToken()->getUser();
+        //var_dump($user);
         $microPost = new MicroPost();
-        $microPost->setUser($user);
+        if ($user instanceof User) {
+            $microPost->setUser($user);
+        }
         //$microPost->setCreatedAt(new \DateTime());
         $form = $this->formFactory->create(MicroPostType::class, $microPost);
         $form->handleRequest($request);
@@ -146,10 +176,10 @@ class MicroPostController extends Controller
             return new RedirectResponse($this->router->generate('micro_post_index'));
         }
         return new Response(
-          $this->twig->render(
-              'micro-post/add.html.twig',
-                    ['form'=> $form->createView()]
-          )
+            $this->twig->render(
+                'micro-post/add.html.twig',
+                ['form'=> $form->createView()]
+            )
         );
     }
     /**
@@ -161,13 +191,12 @@ class MicroPostController extends Controller
         $posts = $userWithPost->getPosts();
         //dd($userWithPost);
         $html = $this->twig->render(
-        'micro-post/user-posts.html.twig',
-        [
+            'micro-post/user-posts.html.twig',
+            [
           'posts'=>$posts,
           'user'=>$userWithPost
         ]
-
-    );
+        );
         //dd($posts[0]->getCreatedAt());
         return new Response($html);
     }
@@ -180,11 +209,11 @@ class MicroPostController extends Controller
         //$post = $this->microPostRepo->find($id);
         if ($post) {
             return new Response(
-          $this->twig->render(
-              'micro-post/post.html.twig',
-              ['post'=>$post]
-            )
-          );
+                $this->twig->render(
+                    'micro-post/post.html.twig',
+                    ['post'=>$post]
+                )
+            );
         } else {
             return new RedirectResponse($this->router->generate('micro_post_index'));
         }

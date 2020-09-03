@@ -25,7 +25,7 @@ class MicroPostRepository extends ServiceEntityRepository
     {
         //dd($users->toArray());
         $qb = $this->createQueryBuilder('p'); // p is an alias.
-        return   $qb->select('p')
+        return   $qb->select('p')          // selecte everything from p
                   ->where('p.user IN (:following)')
                   ->setParameter('following', $users)
                   ->orderBy('p.created_at', 'DESC') // if further modify is needed we return here.

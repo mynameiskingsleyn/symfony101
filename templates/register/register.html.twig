@@ -2,7 +2,9 @@
 
 {% block body %}
   {{ form_start(form) }}
-
+  {# render widget one by one by using widget name
+    {{ form_widget(form.username )}}
+  #}
   {{ form_widget(form) }}
 
   {{ form_end(form) }}

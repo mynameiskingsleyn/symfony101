@@ -18,17 +18,17 @@ class SecurityController
     public function login(AuthenticationUtils $authenticationUtils)
     {
         return new Response($this->twig->render(
-        'security/login.html.twig',
-        [
+            'security/login.html.twig',
+            [
           'last_username'=> $authenticationUtils->getLastUsername(),
           'error' => $authenticationUtils->getLastAuthenticationError()
         ]
-      ));
+        ));
     }
     /**
     * @Route("/logout",name="security_logout")
     */
-    public function logout()
+    public function logout()// this must be empty since it does nothing..
     {
     }
 }

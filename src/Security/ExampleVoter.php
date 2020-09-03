@@ -9,6 +9,7 @@ class ExampleVoter implements VoterInterface
 {
     public function vote(TokenInterface $token, $subject, array $attributes)
     {
+        return false;
         //Todo: inplement vote() method.
     }
 }

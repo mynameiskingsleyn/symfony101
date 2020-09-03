@@ -16,12 +16,14 @@ class MicroPostVoter extends Voter
     private $decisionManager;
     public function __construct(LoggerInterface $logger, AccessDecisionManagerInterface $decisionManager)
     {
+        //dd('done');
         $this->logger = $logger;
         $this->decisionManager = $decisionManager;
     }
     protected function supports($attribute, $subject)
     {
-        //dd('working');
+        //echo "working";
+        //var_dump('working');
         //$this->logger->info('we are at the voter');
         if (!in_array($attribute, [self::EDIT,self::DELETE])) {
             //$this->logger->info('attribute not in');
@@ -37,7 +39,10 @@ class MicroPostVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+        //dd('working now');
         $authenticatedUser = $token->getUser();
+        //var_dump($authenticatedUser);
+
         if (!$authenticatedUser instanceof User) {
             return false;
         }

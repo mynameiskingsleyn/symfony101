@@ -89,7 +89,7 @@ class User implements UserInterface, \Serializable
         $this->posts = new ArrayCollection();
         $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
-        $this->$postsLiked = new ArrayCollection();
+        $this->postsLiked = new ArrayCollection();
     }
 
     /**
