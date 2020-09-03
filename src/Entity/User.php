@@ -79,6 +79,7 @@ class User implements UserInterface, \Serializable
     */
     private $following;
 
+
     /**
     * @ORM\ManyToMany(targetEntity="App\Entity\MicroPost",mappedBy="likedBy")
     */
