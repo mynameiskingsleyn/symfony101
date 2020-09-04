@@ -95,12 +95,13 @@ class AppFixtures extends Fixture
             $user->setFullName($userData['fullName']);
             $user->setEmail($userData['email']);
             $user->setRoles($userData['roles']);
+            $user->setEnabled(true);
             $user->setPassword(
-            $this->passwordEncoder->encodePassword(
+                $this->passwordEncoder->encodePassword(
                 $user,
                 $userData['password']
             )
-        );
+            );
             $this->addReference($userData['username'], $user);
             $manager->persist($user);
         }
