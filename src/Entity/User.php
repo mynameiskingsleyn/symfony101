@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -37,9 +37,9 @@ class User implements UserInterface, \Serializable
     private $password;
 
     /**
-    * @Assert\NotBlank()
-    * @Assert\Length(min=6,max=4096)
-    */
+     * @Assert\NotBlank()
+     * @Assert\Length(min=6,max=4096)
+     */
     private $plainPassword;
     /**
      * @ORM\Column(type="string",length=254, unique=true)
@@ -55,34 +55,33 @@ class User implements UserInterface, \Serializable
      */
     private $fullName;
     /**
-    * @ORM\OneToMany(targetEntity="App\Entity\MicroPost",mappedBy="user")
-    */
+     * @ORM\OneToMany(targetEntity="App\Entity\MicroPost",mappedBy="user")
+     */
     private $posts;
 
     /**
-    * @var array
-    * @ORM\Column(type="simple_array")
-    */
+     * @var array
+     * @ORM\Column(type="simple_array")
+     */
     private $roles;
 
     /**
-    * @ORM\ManyToMany(targetEntity="App\Entity\User",mappedBy="following")
-    */
+     * @ORM\ManyToMany(targetEntity="App\Entity\User",mappedBy="following")
+     */
     private $followers;
 
     /**
-    * @ORM\ManyToMany(targetEntity="App\Entity\User",inversedBy="followers")
-    * @ORM\JoinTable(name="followings",
-    *  joinColumns={ @ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-    *  inverseJoinColumns={ @ORM\JoinColumn(name="following_user_id",referencedColumnName="id")}
-    * )
-    */
+     * @ORM\ManyToMany(targetEntity="App\Entity\User",inversedBy="followers")
+     * @ORM\JoinTable(name="followings",
+     *  joinColumns={ @ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *  inverseJoinColumns={ @ORM\JoinColumn(name="following_user_id",referencedColumnName="id")}
+     * )
+     */
     private $following;
 
-
     /**
-    * @ORM\ManyToMany(targetEntity="App\Entity\MicroPost",mappedBy="likedBy")
-    */
+     * @ORM\ManyToMany(targetEntity="App\Entity\MicroPost",mappedBy="likedBy")
+     */
     private $postsLiked;
 
     public function __construct()
@@ -91,65 +90,68 @@ class User implements UserInterface, \Serializable
         $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
         $this->postsLiked = new ArrayCollection();
+        $this->roles = [self::ROLE_USER];
     }
 
     /**
-    * @param mixed $fullName
-    */
+     * @param mixed $fullName
+     */
     public function setFullName($fullName): void
     {
         $this->fullName = $fullName;
     }
 
     /**
-    * @param mixed $fullName
-    */
+     * @param mixed $fullName
+     */
     public function getFullName()
     {
         return $this->fullName;
     }
 
     /**
-    * @param mixed $username
-    */
+     * @param mixed $username
+     */
     public function setUsername($username): void
     {
         $this->username = $username;
     }
 
     /**
-    * @param mixed $password
-    */
+     * @param mixed $password
+     */
     public function setPassword($password): void
     {
         $this->password = $password;
     }
 
     /**
-    * @param mixed $plainPassword
-    */
+     * @param mixed $plainPassword
+     */
     public function setPlainPassword($plainPassword): void
     {
         $this->plainPassword = $plainPassword;
     }
+
     /**
-    * @param mixed $plainPassword
-    */
+     * @param mixed $plainPassword
+     */
     public function getPlainPassword()
     {
         return $this->plainPassword;
     }
+
     /**
-    * @param mixed $email
-    */
-    public function setEmail($email):void
+     * @param mixed $email
+     */
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
 
     /**
-    * @param mixed $email
-    */
+     * @param mixed $email
+     */
     public function getEmail()
     {
         return $this->email;
@@ -193,9 +195,11 @@ class User implements UserInterface, \Serializable
     {
         return $this->posts;
     }
+
     public function eraseCredentials()
     {
     }
+
     public function serialize()
     {
         return serialize([
@@ -210,8 +214,7 @@ class User implements UserInterface, \Serializable
         list(
         $this->id,
         $this->username,
-        $this->password,
-      ) = unserialize($serialized);
+        $this->password) = unserialize($serialized);
     }
 
     public function getFollowers()
@@ -224,7 +227,7 @@ class User implements UserInterface, \Serializable
         return $this->following;
     }
 
-    public function follow(User $userToFollow)
+    public function follow(self $userToFollow)
     {
         if ($this->getFollowing()->contains($userToFollow)) {
             return;
@@ -233,8 +236,8 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-    * @return Collection
-    */
+     * @return Collection
+     */
     public function getPostsLiked()
     {
         return $this->postsLiked;

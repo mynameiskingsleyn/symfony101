@@ -18,7 +18,7 @@ class LikeNotificationSubscriber implements EventSubscriber
     public function getSubscribedEvents()
     {
         return[
-      Events::onFlush
+      Events::onFlush // has to be called onFlush
     ];
     }
 
